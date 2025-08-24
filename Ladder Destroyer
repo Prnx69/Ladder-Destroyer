@@ -1,0 +1,652 @@
+-- Services
+print("Ladder Destroyer ON TOP! Use It")
+print("Loading Services...")
+
+local Players      = game:GetService("Players")
+local Workspace    = game:GetService("Workspace")
+local RunService   = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local UserInput   = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local checkpointFolder = workspace:WaitForChild("Checkpoints")
+
+--Storage
+print("Loading Storage...")
+
+local lastCheckpoint
+local started = false
+
+-- Player References
+print("Loading Player References...")
+
+local player    = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp       = character:WaitForChild("HumanoidRootPart")
+local function update_walk_speed(ws) plr.Character.Humanoid.WalkSpeed = ws end
+
+task.wait(1)
+
+--loading ui
+
+print("Loading Ui...")
+
+task.wait(1.2)
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+local Window = Library.CreateLib("Ladder Destroyer - DMO", "DarkTheme")
+
+--loading tabs
+
+print("Starting Ui...")
+
+task.wait(1.5)
+
+local MainTab = Window:NewTab("Main") --1
+
+local PlayerTab = Window:NewTab("Player") --2
+
+local TeleportsTab = Window:NewTab("Teleports") --3
+
+local ScriptsTab = Window:NewTab("Scripts") --4
+
+local SettingsTab = Window:NewTab("Settings") --5
+
+local CreditsTab = Window:NewTab("Credits") --6
+
+--main
+
+local speed   = 53               -- studs per second
+local running = false            -- loop flag
+
+local waypoints = {
+    Vector3.new(88,  1,  -246),  -- teleport here instantly
+    Vector3.new(87,  4,  -252),
+    Vector3.new(90,  8,  -257),
+    Vector3.new(96, 13,  -262),
+    Vector3.new(103,17,  -264),
+    Vector3.new(111,22,  -264),
+    Vector3.new(117,26,  -262),
+    Vector3.new(121,30,  -258),
+    Vector3.new(126,34,  -251),
+    Vector3.new(127,39,  -242),
+    Vector3.new(123,45,  -236),
+    Vector3.new(117,50,  -228),
+    Vector3.new(110,54,  -227),
+    Vector3.new(104,58,  -227),
+    Vector3.new(95, 62,  -229),
+    Vector3.new(89, 69,  -238),
+    Vector3.new(87, 72,  -244),
+    Vector3.new(87, 76,  -249)
+}
+
+local function runPath()
+    -- instant teleport to starting point
+    hrp.CFrame = CFrame.new(waypoints[1])
+
+    while running do
+        for i = 2, #waypoints do
+            if not running then
+                return
+            end
+
+            local target = waypoints[i]
+            local dist   = (hrp.Position - target).Magnitude
+            local time   = dist / speed
+
+            local tween = TweenService:Create(
+                hrp,
+                TweenInfo.new(time, Enum.EasingStyle.Linear),
+                { CFrame = CFrame.new(target) }
+            )
+
+            tween:Play()
+            tween.Completed:Wait()
+        end
+    end
+end
+
+local LB1Section = MainTab:NewSection("Ladder Breaker From Below 1")
+LB1Section:NewToggle("Enabled", "Breaking the lower/upper ladder", function(state)
+running = state
+        if state then
+            spawn(runPath)
+        end
+    end
+)
+
+local LB2Section = MainTab:NewSection("Ladder Breaker From Above 2")
+
+local speed   = 53               -- studs per second
+local running = false            -- loop flag
+
+local waypoints = {
+    Vector3.new(87, 144, -242),
+    Vector3.new(94, 135, -232),
+    Vector3.new(104, 128, -227),
+    Vector3.new(113, 124, -227),
+    Vector3.new(123, 116, -233),
+    Vector3.new(126, 110, -244),
+    Vector3.new(124, 101, -256),
+    Vector3.new(116, 97,  -263),
+    Vector3.new(102, 89,  -266),
+    Vector3.new(89,  82,  -257),
+    Vector3.new(87, 144, -242),
+}
+
+local function runPath()
+    hrp.CFrame = CFrame.new(waypoints[1])
+
+    while running do
+        for i = 2, #waypoints do
+            if not running then
+                return
+            end
+
+            local target = waypoints[i]
+            local dist   = (hrp.Position - target).Magnitude
+            local time   = dist / speed
+
+            local tween = TweenService:Create(
+                hrp,
+                TweenInfo.new(time, Enum.EasingStyle.Linear),
+                { CFrame = CFrame.new(target) }
+            )
+
+            tween:Play()
+            tween.Completed:Wait()
+        end
+    end
+end
+
+LB2Section:NewToggle("Enabled", "Breaking the lower/upper ladder", function(state)
+running = state
+        if state then
+            spawn(runPath)
+        end
+    end
+)
+
+local LB5Section = MainTab:NewSection("Create Anti-Fall")
+LB5Section:NewButton("Create Platform", "Create Anti-Fall", function()
+
+    local platform = Instance.new("Part")
+platform.Name         = "antifall"
+platform.Size         = Vector3.new(10000, 1, 10000)
+platform.CFrame       = CFrame.new(0, 0, 0)
+platform.Anchored     = true
+platform.CanCollide   = true
+platform.Transparency = 0.7
+platform.Parent       = workspace
+
+end)
+
+LB5Section:NewButton("Destroy Platform", "Destroying Platform", function()
+
+local target = workspace:FindFirstChild("antifall")
+if target then
+    target:Destroy()
+    print("Платформа antifall удалена")
+else
+    warn("Платформа antifall не найдена")
+end
+
+end)
+
+local LB3Section = MainTab:NewSection("Pass The Obby")
+
+LB3Section:NewButton("Pass", "Pass All Obby", function()
+    
+    for i = 1, 50 do
+    game:GetService("Players").LocalPlayer.Character:PivotTo(CFrame.new(87, 2, -26))
+    task.wait(0.01)
+end
+    
+    local speed = 60
+
+local waypoints = {
+    Vector3.new(87, 2, -26),
+    Vector3.new(84, 2, -239),
+    Vector3.new(87, 148, -253),
+    Vector3.new(87, 155, -266),
+    Vector3.new(78, 155, -387),
+    Vector3.new(76, 96, -392),
+    Vector3.new(78, 155, -387),
+    Vector3.new(71, 155, -467),
+    Vector3.new(71, 96, -470),
+    Vector3.new(69, 104, -485),
+    Vector3.new(66, 96, -513),
+    Vector3.new(64, 96, -539),
+    Vector3.new(69, 96, -544),
+    Vector3.new(68, 96, -561),
+    Vector3.new(61, 96, -565),
+    Vector3.new(59, 96, -595),
+    Vector3.new(59, 121, -595),
+    Vector3.new(55, 105, -634),
+    Vector3.new(31, 105, -720),
+    Vector3.new(27, 105, -764),
+    Vector3.new(41, 105, -780),
+    Vector3.new(33, 105, -873),
+    Vector3.new(39, 121, -905),
+    Vector3.new(33, 121, -967),
+    Vector3.new(30, 132, -1012),
+    Vector3.new(25, 137, -1069),
+    Vector3.new(25, 224, -1069),
+    Vector3.new(8, 213, -1121),
+    Vector3.new(8, 241, -1121),
+    Vector3.new(3, 188, -1194),
+    Vector3.new(3, 193, -1215),
+    Vector3.new(0, 189, -1238),
+    Vector3.new(-1, 195, -1268),
+    Vector3.new(-4, 190, -1294),
+    Vector3.new(-4, 215, -1294),
+    Vector3.new(-13, 215, -1387),
+    Vector3.new(-14, 190, -1403),
+    Vector3.new(-15, 190, -1422),
+    Vector3.new(-21, 190, -1424),
+    Vector3.new(-23, 190, -1441),
+    Vector3.new(-18, 191, -1446),
+    Vector3.new(-20, 191, -1474),
+    Vector3.new(-26, 223, -1530),
+    Vector3.new(-26, 192, -1532),
+    Vector3.new(-33, 335, -1549),
+    Vector3.new(-32, 342, -1544),
+    Vector3.new(-55, 342, -1676),
+    Vector3.new(-59, 283, -1671),
+    Vector3.new(-82, 283, -1813),
+    Vector3.new(-94, 283, -1910),
+    Vector3.new(-96, 347, -1930),
+    Vector3.new(-100, 347, -1954),
+    Vector3.new(-109, 299, -2043),
+    Vector3.new(-112, 265, -2086),
+    Vector3.new(-112, 291, -2086),
+    Vector3.new(-121, 291, -2142),
+    Vector3.new(-121, 265, -2143),
+    Vector3.new(-121, 291, -2142),
+    Vector3.new(-136, 291, -2235),
+    Vector3.new(-138, 265, -2247),
+    Vector3.new(-180, 266, -2364),
+    Vector3.new(-191, 266, -2426),
+    Vector3.new(-180, 265, -2440),
+    Vector3.new(-183, 265, -2453),
+    Vector3.new(-167, 264, -2457),
+    Vector3.new(-170, 265, -2473),
+    Vector3.new(-186, 265, -2471),
+    Vector3.new(-193, 265, -2519),
+    Vector3.new(-211, 265, -2672),
+    Vector3.new(-207, 265, -2693),
+    Vector3.new(-215, 265, -2737),
+    Vector3.new(-236, 266, -2787),
+}
+
+local function tweenTo(position)
+    local startPos = hrp.Position
+    local distance = (startPos - position).Magnitude
+    local duration = distance / speed
+
+    local tween = TweenService:Create(
+        hrp,
+        TweenInfo.new(duration, Enum.EasingStyle.Linear),
+        { CFrame = CFrame.new(position) }
+    )
+
+    tween:Play()
+    tween.Completed:Wait()
+end
+
+spawn(function()
+    for _, targetPos in ipairs(waypoints) do
+        tweenTo(targetPos)
+    end
+end)
+end)
+
+local LB4Section = MainTab:NewSection("Fastest Pass The Obby")
+
+LB4Section:NewButton("Pass", "Fastest Pass All Obby", function()
+
+    local waypoints = {
+    CFrame.new(87, 5, -26),
+    CFrame.new(87, 2, -26),
+    CFrame.new(84, 2, -239),
+    CFrame.new(87, 148, -253),
+    CFrame.new(87, 155, -266),
+    CFrame.new(78, 155, -387),
+    CFrame.new(76, 96, -392),
+    CFrame.new(78, 155, -387),
+    CFrame.new(71, 155, -467),
+    CFrame.new(71, 96, -470),
+    CFrame.new(69, 104, -485),
+    CFrame.new(66, 96, -513),
+    CFrame.new(64, 96, -539),
+    CFrame.new(69, 96, -544),
+    CFrame.new(68, 96, -561),
+    CFrame.new(61, 96, -565),
+    CFrame.new(59, 96, -595),
+    CFrame.new(59, 121, -595),
+    CFrame.new(55, 105, -634),
+    CFrame.new(31, 105, -720),
+    CFrame.new(27, 105, -764),
+    CFrame.new(41, 105, -780),
+    CFrame.new(33, 105, -873),
+    CFrame.new(39, 121, -905),
+    CFrame.new(33, 121, -967),
+    CFrame.new(30, 132, -1012),
+    CFrame.new(25, 137, -1069),
+    CFrame.new(25, 224, -1069),
+    CFrame.new(8, 213, -1121),
+    CFrame.new(8, 241, -1121),
+    CFrame.new(3, 188, -1194),
+    CFrame.new(3, 193, -1215),
+    CFrame.new(0, 189, -1238),
+    CFrame.new(-1, 195, -1268),
+    CFrame.new(-4, 190, -1294),
+    CFrame.new(-4, 215, -1294),
+    CFrame.new(-13, 215, -1387),
+    CFrame.new(-12, 190, -1390),
+    CFrame.new(-15, 190, -1422),
+    CFrame.new(-21, 190, -1424),
+    CFrame.new(-23, 190, -1441),
+    CFrame.new(-18, 191, -1446),
+    CFrame.new(-20, 191, -1474),
+    CFrame.new(-26, 223, -1530),
+    CFrame.new(-26, 192, -1532),
+    CFrame.new(-33, 335, -1549),
+    CFrame.new(-32, 342, -1544),
+    CFrame.new(-55, 342, -1676),
+    CFrame.new(-59, 283, -1671),
+    CFrame.new(-82, 283, -1813),
+    CFrame.new(-94, 283, -1910),
+    CFrame.new(-96, 347, -1930),
+    CFrame.new(-100, 347, -1954),
+    CFrame.new(-109, 299, -2043),
+    CFrame.new(-112, 265, -2086),
+    CFrame.new(-112, 291, -2086),
+    CFrame.new(-121, 291, -2142),
+    CFrame.new(-121, 265, -2143),
+    CFrame.new(-121, 291, -2142),
+    CFrame.new(-136, 291, -2235),
+    CFrame.new(-138, 265, -2247),
+    CFrame.new(-180, 266, -2364),
+    CFrame.new(-191, 266, -2426),
+    CFrame.new(-180, 265, -2440),
+    CFrame.new(-183, 265, -2453),
+    CFrame.new(-167, 264, -2457),
+    CFrame.new(-170, 265, -2473),
+    CFrame.new(-186, 265, -2471),
+    CFrame.new(-193, 265, -2519),
+    CFrame.new(-211, 265, -2672),
+    CFrame.new(-207, 265, -2693),
+    CFrame.new(-215, 265, -2737),
+    CFrame.new(-236, 266, -2787),
+}
+
+for _, targetCFrame in ipairs(waypoints) do
+    hrp.CFrame = targetCFrame
+    task.wait(0.2)
+end
+end)
+
+--credits
+local CreditsSection = CreditsTab:NewSection("Coder - prnxz69 (Русский)")
+CreditsSection:NewLabel("")
+CreditsSection:NewLabel("")
+
+--player
+local function enableNoclip()
+    if noclipActive then return end
+    noclipActive = true
+
+    steppedConn = RunService.Stepped:Connect(function()
+        local character = Workspace:FindFirstChild(player.Name)
+        if character then
+            for _, part in pairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+end
+
+local function disableNoclip()
+    if not noclipActive then return end
+    noclipActive = false
+
+    if steppedConn then
+        steppedConn:Disconnect()
+        steppedConn = nil
+    end
+
+    local character = Workspace:FindFirstChild(player.Name)
+    if character then
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+    end
+end
+
+local NoclipSection = PlayerTab:NewSection("Noclip")
+NoclipSection:NewToggle("Enable/Disable", "Enables Or Disables Noclip Function", function(state)
+    if state then
+        enableNoclip()
+    else
+        disableNoclip()
+    end
+end)
+
+local WalkspeedSection = PlayerTab:NewSection("Player Walkspeed")
+WalkspeedSection:NewSlider(
+    "Set WalkSpeed",
+    "Setting Walkspeed (Standarted Speed - 16)",
+    200,
+    5,
+    function(speed)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = speed
+        end
+    end
+)
+
+local FlySection = PlayerTab:NewSection("Fly")
+
+local flyEnabled      = false
+local flySpeed        = 50
+local bodyVelocity
+local bodyGyro
+local flightConnection
+
+local function isTypingInChat()
+    return UserInput:GetFocusedTextBox() ~= nil
+end
+
+local function enableFly()
+    if flyEnabled then return end
+    flyEnabled = true
+
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+    bodyVelocity.P = 1250
+    bodyVelocity.Velocity = Vector3.zero
+    bodyVelocity.Parent = hrp
+
+    bodyGyro = Instance.new("BodyGyro")
+    bodyGyro.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
+    bodyGyro.P = 3000
+    bodyGyro.CFrame = hrp.CFrame
+    bodyGyro.Parent = hrp
+
+    flightConnection = RunService.RenderStepped:Connect(function()
+        if isTypingInChat() then
+            bodyVelocity.Velocity = Vector3.zero
+            return
+        end
+
+        local camCF = workspace.CurrentCamera.CFrame
+        local dir   = Vector3.zero
+
+        if UserInput:IsKeyDown(Enum.KeyCode.W) then dir += camCF.LookVector end
+        if UserInput:IsKeyDown(Enum.KeyCode.S) then dir -= camCF.LookVector end
+        if UserInput:IsKeyDown(Enum.KeyCode.A) then dir -= camCF.RightVector end
+        if UserInput:IsKeyDown(Enum.KeyCode.D) then dir += camCF.RightVector end
+        if UserInput:IsKeyDown(Enum.KeyCode.Space) then dir += Vector3.new(0, 1, 0) end
+        if UserInput:IsKeyDown(Enum.KeyCode.LeftShift) then dir -= Vector3.new(0, 1, 0) end
+
+        if dir.Magnitude > 0 then
+            bodyVelocity.Velocity = dir.Unit * flySpeed
+        else
+            bodyVelocity.Velocity = Vector3.zero
+        end
+
+        bodyGyro.CFrame = CFrame.new(hrp.Position, hrp.Position + camCF.LookVector)
+    end)
+end
+
+local function disableFly()
+    if not flyEnabled then return end
+    flyEnabled = false
+
+    if flightConnection then
+        flightConnection:Disconnect()
+        flightConnection = nil
+    end
+    if bodyVelocity then
+        bodyVelocity:Destroy()
+        bodyVelocity = nil
+    end
+    if bodyGyro then
+        bodyGyro:Destroy()
+        bodyGyro = nil
+    end
+end
+
+player.CharacterRemoving:Connect(function()
+    if flyEnabled then
+        disableFly()
+    end
+end)
+
+player.CharacterAdded:Connect(function(char)
+    character = char
+    hrp = char:WaitForChild("HumanoidRootPart")
+end)
+
+FlySection:NewToggle("Enable Fly", "Enable Or Disable Flight", function(state)
+    if state then
+        enableFly()
+    else
+        disableFly()
+    end
+end)
+
+FlySection:NewKeybind("Enable Fly Using The Keybind", "Set Your Keybind For Fly",
+    Enum.KeyCode.F,
+    function()
+        if flyEnabled then disableFly() else enableFly() end
+    end
+)
+
+FlySection:NewSlider("Fly Speed", "Adjusting The Flight Speed",
+    1000, 50,
+    function(value)
+        flySpeed = value
+    end
+)
+
+--teleports
+
+local TeleportSection = TeleportsTab:NewSection("Teleports")
+TeleportSection:NewButton("Point 1", "Teleport To Point 1", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(93, 10, -25)
+end)
+
+TeleportSection:NewButton("Point 2", "Teleport To Point 2", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(93, 10, -236)
+end)
+
+TeleportSection:NewButton("Point 3", "Teleport To Point 3", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(87, 154, -255)
+end)
+
+--settings
+
+local SettingsSection = SettingsTab:NewSection("Toggle Ui Keybind")
+SettingsSection:NewKeybind("Toogle Ui", "Set Keybind For Toogle Ui", Enum.KeyCode.P, function()
+	Library:ToggleUI()
+end)
+
+--scripts
+
+local ScriptsSection = ScriptsTab:NewSection("Scripts")
+
+ScriptsSection:NewButton("Infinite Yield", "Execute This Script", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+end)
+
+ScriptsSection:NewButton("System Broken", "Execute This Script", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script"))()
+end)
+
+ScriptsSection:NewButton("Fly Gui", "Execute This Script", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+end)
+
+ScriptsSection:NewButton("R6 & R15 Emotes", "Execute This Script", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Prnx69/DMO-Breaker-Ladder/refs/heads/main/r6%20%20r15%20emotes"))()
+end)
+
+ScriptsSection:NewButton("Only R15 Emotes", "Execute This Script", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs"))()
+end)
+
+ScriptsSection:NewButton("Auto Rejoin", "Auto Rejoining If Player Has Been Kicked", function()
+    spawn(function()
+    local Players   = game:GetService("Players")
+    local player    = Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name   = "EnabledNotification"
+    screenGui.Parent = playerGui
+
+    local label = Instance.new("TextLabel")
+    label.Parent              = screenGui
+    label.Size                = UDim2.new(0, 120, 0, 40)
+    label.Position            = UDim2.new(0, 0, 0.5, -20)
+    label.AnchorPoint         = Vector2.new(0, 0.5)
+    label.BackgroundColor3    = Color3.fromRGB(80, 80, 80)
+    label.BackgroundTransparency = 0.1
+    label.BorderSizePixel     = 0
+    label.Text                = "enabled"
+    label.TextColor3          = Color3.fromRGB(255, 255, 255)
+    label.Font                = Enum.Font.SourceSansBold
+    label.TextSize            = 24
+
+    task.wait(3)
+    screenGui:Destroy()
+end)
+
+while true do
+    task.wait()
+
+    if getgenv().rejoinConnection then
+        getgenv().rejoinConnection:Disconnect()
+    end
+
+    getgenv().rejoinConnection = game:GetService("CoreGui")
+        .RobloxPromptGui
+        .promptOverlay
+        .ChildAdded:Connect(function(prompt)
+            if prompt.Name == "ErrorPrompt"
+            and prompt:FindFirstChild("MessageArea")
+            and prompt.MessageArea:FindFirstChild("ErrorFrame") then
+                game:GetService("TeleportService"):Teleport(game.PlaceId)
+            end
+        end)
+end
+end)
