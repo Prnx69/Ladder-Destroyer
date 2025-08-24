@@ -597,7 +597,7 @@ ScriptsSection:NewButton("Fly Gui", "Execute This Script", function()
 end)
 
 ScriptsSection:NewButton("R6 & R15 Emotes", "Execute This Script", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Prnx69/DMO-Breaker-Ladder/refs/heads/main/r6%20%20r15%20emotes"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Prnx69/Ladder-Destroyer/refs/heads/main/r6%20%20r15%20emotes.txt"))()
 end)
 
 ScriptsSection:NewButton("Only R15 Emotes", "Execute This Script", function()
