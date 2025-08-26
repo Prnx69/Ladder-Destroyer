@@ -1,5 +1,4 @@
 -- Services
-print("Ladder Destroyer ON TOP! Use It")
 print("Loading Services...")
 
 local Players      = game:GetService("Players")
@@ -30,13 +29,11 @@ print("Loading Ui...")
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 
-print("Success!")
+print("Starting Ui...")
 
 local Window = Library.CreateLib("Ladder Destroyer - DMO", "DarkTheme")
 
 --loading tabs
-
-print("Starting Ui...")
 
 local MainTab = Window:NewTab("Main") --1
 
@@ -49,6 +46,8 @@ local ScriptsTab = Window:NewTab("Scripts") --4
 local SettingsTab = Window:NewTab("Settings") --5
 
 local CreditsTab = Window:NewTab("Credits") --6
+
+print("Success!")
 
 --main
 
