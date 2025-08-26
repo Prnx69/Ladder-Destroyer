@@ -24,23 +24,19 @@ local character = player.Character or player.CharacterAdded:Wait()
 local hrp       = character:WaitForChild("HumanoidRootPart")
 local function update_walk_speed(ws) plr.Character.Humanoid.WalkSpeed = ws end
 
-task.wait(1)
-
 --loading ui
 
 print("Loading Ui...")
 
-task.wait(1.2)
-
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+print("Success!")
 
 local Window = Library.CreateLib("Ladder Destroyer - DMO", "DarkTheme")
 
 --loading tabs
 
 print("Starting Ui...")
-
-task.wait(1.5)
 
 local MainTab = Window:NewTab("Main") --1
 
