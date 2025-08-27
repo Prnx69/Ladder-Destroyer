@@ -645,3 +645,7 @@ while true do
         end)
 end
 end)
+
+ScriptsSection:NewButton("Server Hop", "Execute This Script", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Prnx69/Jenga-Destroyer/refs/heads/main/Server%20hop.lua"))()
+end)
